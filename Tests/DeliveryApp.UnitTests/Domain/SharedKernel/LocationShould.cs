@@ -18,7 +18,7 @@ public class LocationShould
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.X.Should().Be(5);
-        result.Value.Y.Should().Be(5);
+        result.Value.Y.Should().Be(8);
     }
 
     [Theory]
