@@ -22,6 +22,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\DeliveryApp.Core\DeliveryApp.Core.csproj"/>
+        <ProjectReference Include="..\..\Utils\Errs\Errs.csproj" />
     </ItemGroup>
 
 </Project>
