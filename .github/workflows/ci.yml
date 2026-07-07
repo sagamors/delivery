@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+    tags-ignore: ["**"]
+  pull_request:
+
+env:
+  APP_NAME: DeliveryApp
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Убеждаемся что логика Core не нарушена
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: dotnet test
+        working-directory: ./Tests/${{ env.APP_NAME }}.UnitTests
+        run: dotnet test
+
+  # Убеждаемся что приложение корректно взаимодействует с инфраструктурой
+  integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: dotnet restore
+        run: dotnet restore ${{ env.APP_NAME }}.sln
+      - name: dotnet test
+        working-directory: ./Tests/${{ env.APP_NAME }}.IntegrationTests
+        run: dotnet test
+
+  # Убеждаемся что API приложения и он сам работает корректно
+  # component-tests:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-dotnet@v4
+  #       with:
+  #         dotnet-version: "10.0.x"
+  #     - name: dotnet restore
+  #       run: dotnet restore ${{ env.APP_NAME }}.sln
+  #     - name: dotnet test
+  #       working-directory: ./Tests/${{ env.APP_NAME }}.ComponentTests
+  #       run: dotnet test
+
+  # Собираем Docker Image и помещаем в Github Container Registry (хранилище артефактов)
+  docker-build:
+    needs: [unit-tests, integration-tests]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
