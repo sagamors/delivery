@@ -88,7 +88,7 @@ public class LocationShould
         //Arrange
 
         //Act
-        var steps = l1.CalculateDistance(l2);
+        var steps = l1.DistanceTo(l2);
 
         //Assert
         steps.Should().Be(distance);

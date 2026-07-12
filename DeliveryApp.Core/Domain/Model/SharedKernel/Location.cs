@@ -55,7 +55,7 @@ public sealed class Location : ValueObject
         return Create(x, y).GetValueOrThrow();
     }
 
-    public int CalculateDistance(Location location)
+    public int DistanceTo(Location location)
     {
         ArgumentNullException.ThrowIfNull(location);
         if (this == location) return 0;
