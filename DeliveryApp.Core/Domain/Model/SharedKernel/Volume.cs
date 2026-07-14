@@ -3,7 +3,7 @@ using CSharpFunctionalExtensions;
 using Errs;
 using Errs.Extensions;
 
-namespace DeliveryApp.Core.Domain.Model.CourierAggregate;
+namespace DeliveryApp.Core.Domain.Model.SharedKernel;
 
 public sealed class Volume : ValueObject
 {

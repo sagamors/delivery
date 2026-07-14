@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Utils\Ddd\Ddd.csproj" />
       <ProjectReference Include="..\Utils\Errs\Errs.csproj" />
     </ItemGroup>
 

@@ -1,8 +1,8 @@
-using DeliveryApp.Core.Domain.Model.CourierAggregate;
+using DeliveryApp.Core.Domain.Model.SharedKernel;
 using FluentAssertions;
 using Xunit;
 
-namespace DeliveryApp.UnitTests.Domain.CourierAggregate;
+namespace DeliveryApp.UnitTests.Domain.SharedKernel;
 
 public class VolumeShould
 {
