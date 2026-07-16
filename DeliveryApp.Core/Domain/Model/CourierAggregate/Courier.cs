@@ -52,8 +52,8 @@ public class Courier : Aggregate<Guid>
         if (order is null)
             return GeneralErrors.ValueIsRequired(nameof(order));
 
-        var currentVolume = _assignments.Sum(ass => ass.Volume.Value);
-        if(currentVolume + order.Volume.Value > MaxVolume.Value)
+        var totalVolume = _assignments.Aggregate(order.Volume, (acc, ass) => acc + ass.Volume);
+        if (totalVolume > MaxVolume)
         {
             return Errors.CanNotTakeOrder();
         }
