@@ -1,6 +1,7 @@
 using System;
 using DeliveryApp.Core.Domain.Model.CourierAggregate;
 using DeliveryApp.Core.Domain.Model.SharedKernel;
+using Errs;
 using FluentAssertions;
 using Xunit;
 
@@ -37,7 +38,7 @@ public class AssignmentShould
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().NotBeNull();
+        result.Error.Should().Be(GeneralErrors.ValueIsRequired("orderId"));
     }
 
     [Fact]
@@ -50,7 +51,7 @@ public class AssignmentShould
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().NotBeNull();
+        result.Error.Should().Be(GeneralErrors.ValueIsRequired("volume"));
     }
 
     [Fact]
@@ -63,7 +64,7 @@ public class AssignmentShould
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().NotBeNull();
+        result.Error.Should().Be(GeneralErrors.ValueIsRequired("location"));
     }
 
     [Fact]
@@ -134,6 +135,7 @@ public class AssignmentShould
 
         // Assert
         result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(Assignment.Errors.CourierTooFar());
         assignment.Status.Should().Be(AssignmentStatus.Assigned);
     }
 
@@ -149,6 +151,7 @@ public class AssignmentShould
 
         // Assert
         result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(Assignment.Errors.AlreadyCompleted());
     }
 
     [Fact]
@@ -162,5 +165,6 @@ public class AssignmentShould
 
         // Assert
         result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(GeneralErrors.ValueIsRequired("courierLocation"));
     }
 }

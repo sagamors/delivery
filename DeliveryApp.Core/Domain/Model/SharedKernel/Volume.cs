@@ -3,9 +3,9 @@ using CSharpFunctionalExtensions;
 using Errs;
 using Errs.Extensions;
 
-namespace DeliveryApp.Core.Domain.Model.CourierAggregate;
+namespace DeliveryApp.Core.Domain.Model.SharedKernel;
 
-public sealed class Volume : ValueObject
+public sealed class Volume : ValueObject, IComparable<Volume>
 {
     /// <summary>
     ///     Объём
@@ -23,6 +23,18 @@ public sealed class Volume : ValueObject
 
         return new Volume(value);
     }
+
+    public static Volume operator +(Volume left, Volume right) => new(left.Value + right.Value);
+
+    public int CompareTo(Volume other)
+    {
+        return Value.CompareTo(other.Value);
+    }
+
+    public static bool operator >(Volume left, Volume right) => left.CompareTo(right) > 0;
+    public static bool operator <(Volume left, Volume right) => left.CompareTo(right) < 0;
+    public static bool operator >=(Volume left, Volume right) => left.CompareTo(right) >= 0;
+    public static bool operator <=(Volume left, Volume right) => left.CompareTo(right) <= 0;
 
     /// <summary>
     ///     Factory Method. Создаёт объект в контексте, где нарушение инвариантов невозможно и является исключительной ситуацией
