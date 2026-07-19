@@ -47,16 +47,16 @@ public class Order : Aggregate<Guid>
         return new Order(orderId, volume, location);
     }
     
-    public  UnitResult<Error> Assign(Courier courier)
+    public  UnitResult<Error> Assign(Guid courierId)
     {
-        if (courier == null)
-            return GeneralErrors.ValueIsRequired(nameof(courier));
+        if (courierId == default)
+            return GeneralErrors.ValueIsRequired(nameof(courierId));
         
         if (Status != OrderStatus.Created)
             return Errors.NotCreated();
         
         Status = OrderStatus.Assigned;
-        CourierId = courier.Id;
+        CourierId = courierId;
         return UnitResult.Success<Error>();
     }
     
