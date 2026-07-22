@@ -103,9 +103,9 @@ public class OrderShould
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Volume.MustCreate(5), Location.MustCreate(1, 1)).Value;
         var courier = Courier.Create("Test Courier", Location.Create(1, 1).Value).Value;
-        
+
         // Act
-        var result = order.Assign(courier);
+        var result = order.Assign(courier.Id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -118,9 +118,9 @@ public class OrderShould
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Volume.MustCreate(5), Location.MustCreate(1, 1)).Value;
         var courier = Courier.Create("Test Courier", Location.Create(2, 1).Value).Value;
-        
+
         // Act
-        var result = order.Assign(courier);
+        var result = order.Assign(courier.Id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -133,10 +133,10 @@ public class OrderShould
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Volume.MustCreate(5), Location.MustCreate(1, 1)).Value;
         var courier = Courier.Create("Test Courier", Location.Create(2, 1).Value).Value;
-        order.Assign(courier);
-        
+        order.Assign(courier.Id);
+
         // Act
-        var result = order.Assign(courier);
+        var result = order.Assign(courier.Id);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -149,8 +149,8 @@ public class OrderShould
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Volume.MustCreate(5), Location.MustCreate(1, 1)).Value;
         var courier = Courier.Create("Test Courier", Location.Create(1, 1).Value).Value;
-        order.Assign(courier);
-        
+        order.Assign(courier.Id);
+
         // Act
         var result = order.Complete();
 
@@ -165,9 +165,9 @@ public class OrderShould
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Volume.MustCreate(5), Location.MustCreate(1, 1)).Value;
         var courier = Courier.Create("Test Courier", Location.Create(1, 1).Value).Value;
-        order.Assign(courier);
+        order.Assign(courier.Id);
         order.Complete();
-        
+
         // Act
         var result = order.Complete();
 
