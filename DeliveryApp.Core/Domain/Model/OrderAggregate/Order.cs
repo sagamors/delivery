@@ -4,6 +4,7 @@ using Ddd;
 using DeliveryApp.Core.Domain.Model.CourierAggregate;
 using DeliveryApp.Core.Domain.Model.SharedKernel;
 using Errs;
+using Errs.Extensions;
 
 namespace DeliveryApp.Core.Domain.Model.OrderAggregate;
 
@@ -47,6 +48,14 @@ public class Order : Aggregate<Guid>
         return new Order(orderId, volume, location);
     }
     
+    /// <summary>
+    ///     Factory Method. Создаёт объект в контексте, где нарушение инвариантов невозможно и является исключительной ситуацией
+    /// </summary>
+    public static Order MustCreate(Guid orderId, Volume volume, Location location)
+    {
+        return Create(orderId, volume, location).GetValueOrThrow();
+    }
+
     public  UnitResult<Error> Assign(Guid courierId)
     {
         if (courierId == default)
