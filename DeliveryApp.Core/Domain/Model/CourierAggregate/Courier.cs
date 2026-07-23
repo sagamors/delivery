@@ -5,6 +5,7 @@ using Ddd;
 using DeliveryApp.Core.Domain.Model.OrderAggregate;
 using DeliveryApp.Core.Domain.Model.SharedKernel;
 using Errs;
+using Errs.Extensions;
 
 namespace DeliveryApp.Core.Domain.Model.CourierAggregate;
 
@@ -16,7 +17,7 @@ public class Courier : Aggregate<Guid>
 
     public Location Location { get; private set; }
 
-    public Volume MaxVolume { get; private set; } = Volume.MustCreate(20);
+    public static Volume MaxVolume { get; private set; } = Volume.MustCreate(20);
 
     public IReadOnlyCollection<Assignment> Assignments { get; }
 
@@ -45,6 +46,14 @@ public class Courier : Aggregate<Guid>
             return GeneralErrors.ValueIsRequired(nameof(location));
 
         return new Courier(name, location);
+    }
+    
+    /// <summary>
+    ///     Factory Method. Создаёт объект в контексте, где нарушение инвариантов невозможно и является исключительной ситуацией
+    /// </summary>
+    public static Courier MustCreate(string name, Location location)
+    {
+        return Create(name, location).GetValueOrThrow();
     }
 
     public Result<bool, Error> CanTakeOrder(Order order)
