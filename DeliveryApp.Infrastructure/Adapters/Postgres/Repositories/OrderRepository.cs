@@ -31,7 +31,7 @@ public class OrderRepository(ApplicationDbContext dbContext) : IOrderRepository
     {
         var order = await _dbContext
             .Orders
-            .SingleOrDefaultAsync(o => o.Status == OrderStatus.Created, cancellationToken);
+            .FirstOrDefaultAsync(o => o.Status == OrderStatus.Created, cancellationToken);
         return order;
     }
 
