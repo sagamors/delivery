@@ -24,7 +24,7 @@ public class CourierShould
         result.IsSuccess.Should().BeTrue();
         result.Value.Name.Should().Be(name);
         result.Value.Location.Should().Be(location);
-        result.Value.MaxVolume.Should().Be(Volume.MustCreate(20));
+        Courier.MaxVolume.Should().Be(Volume.MustCreate(20));
         result.Value.Assignments.Should().BeEmpty();
     }
 
