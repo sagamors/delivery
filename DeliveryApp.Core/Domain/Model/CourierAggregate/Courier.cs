@@ -91,9 +91,9 @@ public class Courier : Aggregate<Guid>
         return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> CompleteOrder(Order order)
+    public UnitResult<Error> CompleteOrder(Guid orderId)
     {
-        var assignment = Assignments.FirstOrDefault(ass => ass.OrderId == order.Id);
+        var assignment = Assignments.FirstOrDefault(ass => ass.OrderId == orderId);
 
         if (assignment == null)
         {

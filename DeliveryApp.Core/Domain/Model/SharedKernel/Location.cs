@@ -66,6 +66,13 @@ public sealed class Location : ValueObject
         return x + y;
     }
     
+    public static Location CreateRandom()
+    {
+        var x = Random.Shared.Next(Min.X, Max.X + 1);
+        var y = Random.Shared.Next(Min.Y, Max.Y + 1);
+        return new Location(x, y);
+    }
+    
     [ExcludeFromCodeCoverage]
     private Location(int x, int y)
     {

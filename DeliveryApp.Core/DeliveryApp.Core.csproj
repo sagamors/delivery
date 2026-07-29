@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Dapper" />
+        <PackageReference Include="Microsoft.Extensions.Options" />
         <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="Npgsql" />
         <PackageReference Include="System.Reflection" />
