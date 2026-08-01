@@ -142,7 +142,7 @@ public class CourierShould
         courier.TakeOrder(order);
 
         // Act
-        var result = courier.CompleteOrder(order);
+        var result = courier.CompleteOrder(order.Id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -157,7 +157,7 @@ public class CourierShould
         var order = Order.Create(Guid.NewGuid(), Volume.MustCreate(5), Location.MustCreate(1, 1)).Value;
 
         // Act
-        var result = courier.CompleteOrder(order);
+        var result = courier.CompleteOrder(order.Id);
 
         // Assert
         result.IsFailure.Should().BeTrue();

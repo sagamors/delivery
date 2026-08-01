@@ -1,5 +1,6 @@
 using Ddd;
 using DeliveryApp.Api;
+using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Core.Ports;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
@@ -10,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Health Checks
 builder.Services.AddHealthChecks();
+
+// MediatR
+builder.Services.AddMediatR(cfg => 
+    cfg.RegisterServicesFromAssembly(typeof(GetAllCouriersHandler).Assembly));
 
 // Cors
 builder.Services.AddCors(options =>
