@@ -37,7 +37,11 @@ public class CreateOrderCommand : IRequest<UnitResult<Error>>
         string house, string apartment, Volume volume)
     {
         if (orderId == Guid.Empty) return GeneralErrors.ValueIsRequired(nameof(orderId));
+        if (string.IsNullOrWhiteSpace(country)) return GeneralErrors.ValueIsRequired(nameof(country));
+        if (string.IsNullOrWhiteSpace(city)) return GeneralErrors.ValueIsRequired(nameof(city));
         if (string.IsNullOrWhiteSpace(street)) return GeneralErrors.ValueIsRequired(nameof(street));
+        if (string.IsNullOrWhiteSpace(house)) return GeneralErrors.ValueIsRequired(nameof(house));
+        if (string.IsNullOrWhiteSpace(apartment)) return GeneralErrors.ValueIsRequired(nameof(apartment));
         if (volume == null) return GeneralErrors.ValueIsRequired(nameof(volume));
 
         return new CreateOrderCommand(orderId, country, city, street, house, apartment, volume);

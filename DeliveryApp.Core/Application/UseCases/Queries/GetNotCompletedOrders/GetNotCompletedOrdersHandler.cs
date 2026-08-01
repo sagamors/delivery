@@ -6,28 +6,23 @@ using Npgsql;
 
 namespace DeliveryApp.Core.Application.UseCases.Queries.GetNotCompletedOrders;
 
-public class GetNotCompletedOrdersHandler : IRequestHandler<GetNotCompletedOrdersQuery, GetNotCompletedOrdersResult>
+public class GetNotCompletedOrdersHandler(IOptions<Settings> settings) : IRequestHandler<GetNotCompletedOrdersQuery, GetNotCompletedOrdersResult>
 {
-    private readonly string _connectionString;
-
-    public GetNotCompletedOrdersHandler(IOptions<Settings> settings)
-    {
-        _connectionString = !string.IsNullOrWhiteSpace(settings.Value.ConnectionString)
-            ? settings.Value.ConnectionString
-            : throw new ArgumentNullException(nameof(settings));
-    }
+    private readonly string _connectionString = !string.IsNullOrWhiteSpace(settings.Value.ConnectionString)
+        ? settings.Value.ConnectionString
+        : throw new ArgumentNullException(nameof(settings));
 
     public async Task<GetNotCompletedOrdersResult> Handle(GetNotCompletedOrdersQuery message, CancellationToken cancellationToken)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync(cancellationToken);
 
-        var rows = await connection.QueryAsync<OrderRow>(
-            @"SELECT id, location_x AS LocationX, location_y AS LocationY FROM public.orders where status IN (@created, @assigned);"
-            , new { created = OrderStatus.Created.Name, assigned = OrderStatus.Assigned.Name });
+        var result = await connection.QueryAsync<dynamic>(
+            @"SELECT id, courier_id, location_x, location_y FROM public.orders where status!=@status;"
+            , new { status = OrderStatus.Completed.Name });
 
-        var dbOrders = rows.ToList();
-
+        var dbOrders = result.ToList();
+        
         if (dbOrders.Count == 0)
             return GetNotCompletedOrdersResult.None;
 
@@ -36,19 +31,13 @@ public class GetNotCompletedOrdersHandler : IRequestHandler<GetNotCompletedOrder
         return new GetNotCompletedOrdersResult(orders);
     }
 
-    private sealed class OrderRow
-    {
-        public Guid Id { get; set; }
-        public int LocationX { get; set; }
-        public int LocationY { get; set; }
-    }
-
     private static class Mapper
     {
-        public static OrderDto MapToOrderDto(OrderRow row) => new()
+        public static OrderDto MapToOrderDto(dynamic result)
         {
-            Id = row.Id,
-            LocationDto = new LocationDto { X = row.LocationX, Y = row.LocationY }
-        };
+            var location = new LocationDto { X = result.location_x, Y = result.location_y };
+            var order = new OrderDto { Id = result.id, LocationDto = location };
+            return order;
+        }
     }
 }
