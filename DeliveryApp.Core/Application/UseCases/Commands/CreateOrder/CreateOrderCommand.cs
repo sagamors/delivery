@@ -3,7 +3,7 @@ using DeliveryApp.Core.Domain.Model.SharedKernel;
 using Errs;
 using MediatR;
 
-namespace DeliveryApp.Core.Application.UseCases.Commands;
+namespace DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
 
 /// <summary>
 ///     Создать заказ

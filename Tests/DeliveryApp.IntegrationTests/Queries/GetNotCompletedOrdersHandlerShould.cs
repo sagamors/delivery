@@ -41,8 +41,8 @@ public class GetNotCompletedOrdersHandlerShould : IntegrationTestBase
         result.Orders.Should().NotContain(o => o.Id == completedOrderId);
 
         var dto = result.Orders.Single(o => o.Id == notCompletedOrderId);
-        dto.LocationDto.X.Should().Be(Location.Min.X);
-        dto.LocationDto.Y.Should().Be(Location.Min.Y);
+        dto.Location.X.Should().Be(Location.Min.X);
+        dto.Location.Y.Should().Be(Location.Min.Y);
     }
 
     [Fact]

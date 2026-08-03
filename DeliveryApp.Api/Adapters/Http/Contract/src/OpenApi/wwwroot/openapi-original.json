@@ -1,0 +1,527 @@
+{
+  "openapi" : "3.1.0",
+  "info" : {
+    "description" : "Отвечает за учет курьеров, диспетчеризацию доставок, доставку",
+    "title" : "Swagger Delivery",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "/"
+  } ],
+  "paths" : {
+    "/api/v1/orders" : {
+      "post" : {
+        "description" : "Позволяет создать заказ с целью тестирования",
+        "operationId" : "CreateOrder",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewOrder"
+              }
+            }
+          },
+          "description" : "Новый заказ",
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateOrderResponse"
+                }
+              }
+            },
+            "description" : "Заказ успешно создан"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Некорректные параметры запроса"
+          },
+          "409" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Конфликт при создании заказа"
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Внутренняя ошибка сервиса"
+          }
+        },
+        "summary" : "Создать заказ",
+        "tags" : [ "CreateOrder" ]
+      }
+    },
+    "/api/v1/couriers/{courierId}/orders/{orderId}/complete" : {
+      "post" : {
+        "description" : "Позволяет завершить заказ",
+        "operationId" : "CompleteOrder",
+        "parameters" : [ {
+          "description" : "Идентификатор курьера",
+          "explode" : false,
+          "in" : "path",
+          "name" : "courierId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "style" : "simple"
+        }, {
+          "description" : "Идентификатор заказа",
+          "explode" : false,
+          "in" : "path",
+          "name" : "orderId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Успешный ответ"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Некорректные параметры запроса"
+          },
+          "409" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Конфликт при завершении заказа"
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Внутренняя ошибка сервиса"
+          }
+        },
+        "summary" : "Завершить заказ",
+        "tags" : [ "CompleteOrder" ]
+      }
+    },
+    "/api/v1/couriers/{courierId}/move" : {
+      "post" : {
+        "description" : "Позволяет переместить курьера",
+        "operationId" : "MoveCourier",
+        "parameters" : [ {
+          "description" : "Идентификатор курьера",
+          "explode" : false,
+          "in" : "path",
+          "name" : "courierId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Location"
+              }
+            }
+          },
+          "description" : "Местоположение",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Успешный ответ"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Некорректные параметры запроса"
+          },
+          "409" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Конфликт при перемещении курьера"
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Внутренняя ошибка сервиса"
+          }
+        },
+        "summary" : "Переместить курьера",
+        "tags" : [ "MoveCourier" ]
+      }
+    },
+    "/api/v1/orders/active" : {
+      "get" : {
+        "description" : "Позволяет получить все незавершенные заказы",
+        "operationId" : "GetOrders",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/Order"
+                  },
+                  "type" : "array",
+                  "default" : null
+                }
+              }
+            },
+            "description" : "Успешный ответ"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Некорректные параметры запроса"
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Внутренняя ошибка сервиса"
+          }
+        },
+        "summary" : "Получить все незавершенные заказы",
+        "tags" : [ "GetOrders" ]
+      }
+    },
+    "/api/v1/couriers" : {
+      "get" : {
+        "description" : "Позволяет получить всех курьеров",
+        "operationId" : "GetCouriers",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/Courier"
+                  },
+                  "type" : "array",
+                  "default" : null
+                }
+              }
+            },
+            "description" : "Успешный ответ"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Некорректные параметры запроса"
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Внутренняя ошибка сервиса"
+          }
+        },
+        "summary" : "Получить всех курьеров",
+        "tags" : [ "GetCouriers" ]
+      },
+      "post" : {
+        "description" : "Позволяет добавить курьера",
+        "operationId" : "CreateCourier",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewCourier"
+              }
+            }
+          },
+          "description" : "Курьер",
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateCourierResponse"
+                }
+              }
+            },
+            "description" : "Курьер успешно создан"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Некорректные параметры запроса"
+          },
+          "409" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Конфликт при создании курьера"
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Внутренняя ошибка сервиса"
+          }
+        },
+        "summary" : "Добавить курьера",
+        "tags" : [ "CreateCourier" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Address" : {
+        "properties" : {
+          "country" : {
+            "description" : "Страна",
+            "type" : "string"
+          },
+          "city" : {
+            "description" : "Город",
+            "type" : "string"
+          },
+          "street" : {
+            "description" : "Улица",
+            "type" : "string"
+          },
+          "house" : {
+            "description" : "Дом",
+            "type" : "string"
+          },
+          "apartment" : {
+            "description" : "Квартира",
+            "type" : "string"
+          }
+        },
+        "required" : [ "apartment", "city", "country", "house", "street" ]
+      },
+      "Location" : {
+        "example" : {
+          "x" : 0,
+          "y" : 0
+        },
+        "properties" : {
+          "x" : {
+            "description" : "X",
+            "minimum" : 0,
+            "type" : "integer"
+          },
+          "y" : {
+            "description" : "Y",
+            "minimum" : 0,
+            "type" : "integer"
+          }
+        },
+        "required" : [ "x", "y" ]
+      },
+      "NewOrder" : {
+        "example" : {
+          "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "address" : "",
+          "volume" : 0
+        },
+        "properties" : {
+          "id" : {
+            "description" : "Идентификатор",
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "address" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Address"
+            } ],
+            "description" : "Адрес"
+          },
+          "volume" : {
+            "description" : "Объем",
+            "minimum" : 0,
+            "type" : "integer"
+          }
+        },
+        "required" : [ "address", "id", "volume" ]
+      },
+      "Order" : {
+        "example" : {
+          "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "location" : ""
+        },
+        "properties" : {
+          "id" : {
+            "description" : "Идентификатор",
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "location" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Location"
+            } ],
+            "description" : "Геолокация"
+          }
+        },
+        "required" : [ "id", "location" ]
+      },
+      "NewCourier" : {
+        "example" : {
+          "name" : "name"
+        },
+        "properties" : {
+          "name" : {
+            "description" : "Имя",
+            "minLength" : 1,
+            "type" : "string"
+          }
+        },
+        "required" : [ "name" ]
+      },
+      "Courier" : {
+        "example" : {
+          "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "name" : "name",
+          "location" : ""
+        },
+        "properties" : {
+          "id" : {
+            "description" : "Идентификатор",
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "name" : {
+            "description" : "Имя",
+            "type" : "string"
+          },
+          "location" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Location"
+            } ],
+            "description" : "Геолокация"
+          }
+        },
+        "required" : [ "id", "location", "name" ]
+      },
+      "CreateOrderResponse" : {
+        "example" : {
+          "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        },
+        "properties" : {
+          "orderId" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        },
+        "required" : [ "orderId" ]
+      },
+      "CreateCourierResponse" : {
+        "example" : {
+          "courierId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        },
+        "properties" : {
+          "courierId" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        },
+        "required" : [ "courierId" ]
+      },
+      "Error" : {
+        "example" : {
+          "code" : 0,
+          "message" : "message"
+        },
+        "properties" : {
+          "code" : {
+            "description" : "Код ошибки",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "message" : {
+            "description" : "Текст ошибки",
+            "type" : "string"
+          }
+        },
+        "required" : [ "code", "message" ]
+      }
+    }
+  }
+}

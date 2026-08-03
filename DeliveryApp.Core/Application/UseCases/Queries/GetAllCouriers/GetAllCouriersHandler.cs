@@ -13,7 +13,7 @@ public class GetAllCouriersHandler(IOptions<Settings> settings) : IRequestHandle
 
     public async Task<GetAllCouriersResult> Handle(GetAllCouriersQuery message, CancellationToken cancellationToken)
     {
-        using var connection = new NpgsqlConnection(_connectionString);
+        await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync(cancellationToken);
 
         var rows = await connection.QueryAsync<CourierRow>(

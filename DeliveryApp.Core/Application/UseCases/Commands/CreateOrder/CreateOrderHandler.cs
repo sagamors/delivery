@@ -6,7 +6,7 @@ using DeliveryApp.Core.Ports;
 using Errs;
 using MediatR;
 
-namespace DeliveryApp.Core.Application.UseCases.Commands;
+namespace DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
 
 public class CreateOrderHandler(IUnitOfWork unitOfWork, IOrderRepository orderRepository)
     : IRequestHandler<CreateOrderCommand, UnitResult<Error>>
