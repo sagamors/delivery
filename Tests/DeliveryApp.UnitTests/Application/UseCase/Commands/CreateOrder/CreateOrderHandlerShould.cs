@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Ddd;
-using DeliveryApp.Core.Application.UseCases.Commands;
+using DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
 using DeliveryApp.Core.Domain.Model.OrderAggregate;
 using DeliveryApp.Core.Domain.Model.SharedKernel;
 using DeliveryApp.Core.Ports;
@@ -37,8 +37,8 @@ public class CreateOrderHandlerShould
         const string house = "1";
         const string apart = "1";
         var volume = Volume.MustCreate(5);
-        
-        var command = CreateOrderCommand.Create(orderId, country: country, city, street,  house, apart, volume).Value;
+
+        var command = CreateOrderCommand.Create(orderId, country: country, city, street,  house, apart, volume.Value).Value;
 
         _orderRepository.GetAsync(orderId, CancellationToken.None).Returns(Task.FromResult<Maybe<Order>>(null));
         _unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(true));
@@ -67,8 +67,8 @@ public class CreateOrderHandlerShould
         const string house = "1";
         const string apart = "1";
         var volume = Volume.MustCreate(5);
-        
-        var command = CreateOrderCommand.Create(orderId, country: country, city, street,  house, apart, volume).Value;
+
+        var command = CreateOrderCommand.Create(orderId, country: country, city, street,  house, apart, volume.Value).Value;
 
         var existingOrder = Order.Create(orderId, volume, Location.CreateRandom()).Value;
         _orderRepository.GetAsync(orderId, CancellationToken.None).Returns(Task.FromResult<Maybe<Order>>(existingOrder));

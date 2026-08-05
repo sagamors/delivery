@@ -36,7 +36,7 @@ public class GetNotCompletedOrdersHandler(IOptions<Settings> settings) : IReques
         public static OrderDto MapToOrderDto(dynamic result)
         {
             var location = new LocationDto { X = result.location_x, Y = result.location_y };
-            var order = new OrderDto { Id = result.id, LocationDto = location };
+            var order = new OrderDto { Id = result.id, Location = location };
             return order;
         }
     }

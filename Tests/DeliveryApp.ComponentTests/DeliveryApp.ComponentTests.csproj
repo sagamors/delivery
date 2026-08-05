@@ -35,6 +35,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\DeliveryApp.Api\DeliveryApp.Api.csproj" />
+        <ProjectReference Include="..\CntFixtures\CntFixtures.csproj" />
     </ItemGroup>
 
 </Project>

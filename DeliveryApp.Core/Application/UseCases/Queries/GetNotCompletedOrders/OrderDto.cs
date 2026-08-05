@@ -4,5 +4,5 @@ public class OrderDto
 {
     public Guid Id { get; set; }
     
-    public LocationDto LocationDto { get; set; }
+    public LocationDto Location { get; set; }
 }
