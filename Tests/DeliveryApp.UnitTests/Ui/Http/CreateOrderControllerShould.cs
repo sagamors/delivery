@@ -6,6 +6,7 @@ using DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
 using Errs;
 using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using OpenApi.Models;
@@ -40,11 +41,14 @@ public class CreateOrderControllerShould
             },
             Volume = 3
         };
-        
+
         var result = await basketController.CreateOrder(newOrder);
 
         // Assert
-        result.Should().BeOfType<OkResult>();
+        var objectResult = result.Should().BeOfType<ObjectResult>().Subject;
+        objectResult.StatusCode.Should().Be(StatusCodes.Status201Created);
+        objectResult.Value.Should().BeOfType<CreateOrderResponse>()
+            .Which.OrderId.Should().Be(newOrder.Id);
     }
 
     [Fact]

@@ -7,7 +7,7 @@ namespace DeliveryApp.Core.Application.UseCases.Commands.CreateCourier;
 /// <summary>
 ///     Создать курьера
 /// </summary>
-public class CreateCourierCommand : IRequest<UnitResult<Error>>
+public class CreateCourierCommand : IRequest<Result<Guid, Error>>
 {
     private CreateCourierCommand(string name)
     {

@@ -9,15 +9,15 @@ using MediatR;
 namespace DeliveryApp.Core.Application.UseCases.Commands.CreateCourier;
 
 public class CreateCourierHandler(IUnitOfWork unitOfWork, ICourierRepository courierRepository)
-    : IRequestHandler<CreateCourierCommand, UnitResult<Error>>
+    : IRequestHandler<CreateCourierCommand, Result<Guid, Error>>
 {
-    public async Task<UnitResult<Error>> Handle(CreateCourierCommand message, CancellationToken cancellationToken)
+    public async Task<Result<Guid, Error>> Handle(CreateCourierCommand message, CancellationToken cancellationToken)
     {
         var location = Location.CreateRandom();
         var courierCreateResult = Courier.Create(message.Name, location);
         if (courierCreateResult.IsFailure)
         {
-            return courierCreateResult;
+            return courierCreateResult.Error;
         }
 
         var courier = courierCreateResult.Value;
@@ -25,6 +25,6 @@ public class CreateCourierHandler(IUnitOfWork unitOfWork, ICourierRepository cou
         await courierRepository.AddAsync(courier);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return UnitResult.Success<Error>();
+        return courier.Id;
     }
 }

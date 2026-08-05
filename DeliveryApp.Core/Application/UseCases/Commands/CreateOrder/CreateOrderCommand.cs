@@ -34,7 +34,7 @@ public class CreateOrderCommand : IRequest<UnitResult<Error>>
     /// <param name="volume">Объем</param>
     /// <returns>Результат</returns>
     public static Result<CreateOrderCommand, Error> Create(Guid orderId, string country, string city, string street,
-        string house, string apartment, Volume volume)
+        string house, string apartment, int volume)
     {
         if (orderId == Guid.Empty) return GeneralErrors.ValueIsRequired(nameof(orderId));
         if (string.IsNullOrWhiteSpace(country)) return GeneralErrors.ValueIsRequired(nameof(country));
@@ -42,9 +42,11 @@ public class CreateOrderCommand : IRequest<UnitResult<Error>>
         if (string.IsNullOrWhiteSpace(street)) return GeneralErrors.ValueIsRequired(nameof(street));
         if (string.IsNullOrWhiteSpace(house)) return GeneralErrors.ValueIsRequired(nameof(house));
         if (string.IsNullOrWhiteSpace(apartment)) return GeneralErrors.ValueIsRequired(nameof(apartment));
-        if (volume == null) return GeneralErrors.ValueIsRequired(nameof(volume));
 
-        return new CreateOrderCommand(orderId, country, city, street, house, apartment, volume);
+        var volumeResult = Volume.Create(volume);
+        if (volumeResult.IsFailure) return volumeResult.Error;
+
+        return new CreateOrderCommand(orderId, country, city, street, house, apartment, volumeResult.Value);
     }
 
     /// <summary>
