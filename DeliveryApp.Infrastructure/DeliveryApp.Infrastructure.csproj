@@ -46,7 +46,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Protobuf Include="Proto\basket_events.proto" />
       <Protobuf Include="Proto\order_events.proto" />
       <None Remove="Adapters\Grpc\GeoService\geo.proto" />
       <Protobuf Include="Adapters\Grpc\GeoService\geo.proto">
