@@ -47,7 +47,7 @@
 
     <ItemGroup>
       <Protobuf Include="Proto\basket_events.proto" />
-      <Protobuf Include="Proto\geo.proto" />
+      <Protobuf Include="Proto\geo.proto" GrpcServices="Client" />
       <Protobuf Include="Proto\order_events.proto" />
     </ItemGroup>
 

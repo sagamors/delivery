@@ -1,14 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using Ddd;
 using DeliveryApp.Core.Domain.Model.OrderAggregate;
-using DeliveryApp.Core.Domain.Model.SharedKernel;
 using DeliveryApp.Core.Ports;
 using Errs;
 using MediatR;
 
 namespace DeliveryApp.Core.Application.UseCases.Commands.CreateOrder;
 
-public class CreateOrderHandler(IUnitOfWork unitOfWork, IOrderRepository orderRepository)
+public class CreateOrderHandler(IUnitOfWork unitOfWork, IOrderRepository orderRepository, IGeoService geoService)
     : IRequestHandler<CreateOrderCommand, UnitResult<Error>>
 {
     public async Task<UnitResult<Error>> Handle(CreateOrderCommand message, CancellationToken cancellationToken)
@@ -19,8 +18,13 @@ public class CreateOrderHandler(IUnitOfWork unitOfWork, IOrderRepository orderRe
             return UnitResult.Failure<Error>(Errors.AlreadyExist());
         }
 
-        var location = Location.CreateRandom();
-        var orderCreateResult = Order.Create(message.OrderId, message.Volume, location);
+        var locationResult = await geoService.GetGeolocationAsync(message.Street, cancellationToken);
+        if (locationResult.IsFailure)
+        {
+            return locationResult.Error;
+        }
+
+        var orderCreateResult = Order.Create(message.OrderId, message.Volume, locationResult.Value);
         if (orderCreateResult.IsFailure)
         {
             return orderCreateResult;

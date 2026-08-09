@@ -1,19 +1,27 @@
 using System.Reflection;
 using AutoMapper;
+using Clients.Geo;
 using Ddd;
 using DeliveryApp.Api;
 using DeliveryApp.Api.Adapters.BackgroundJobs;
+using DeliveryApp.Core;
 using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Core.Ports;
+using DeliveryApp.Infrastructure.Adapters.Grpc.GeoService;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
+using Grpc.Net.Client;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Quartz;
+
+// Для локальной разработки Geo-сервис обычно поднят по обычному http:// (без TLS)
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +76,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICourierRepository, CourierRepository>();
+
+// 9 модуль: Geo Service (gRPC Client)
+builder.Services.AddSingleton(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<Settings>>().Value;
+    var channel = GrpcChannel.ForAddress(settings.GeoServiceGrpcHost);
+    return new Geo.GeoClient(channel);
+});
+builder.Services.AddScoped<IGeoService, GeoService>();
 
 // CRON Jobs
 builder.Services.AddQuartz(configure =>
