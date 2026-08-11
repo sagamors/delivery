@@ -2,7 +2,7 @@
 
 namespace Ddd;
 
-public abstract class DomainEvent : INotification
+public abstract record DomainEvent : INotification
 {
     public Guid EventId { get; protected set; }
     public DateTime OccurredAt { get; protected set; }
