@@ -31,5 +31,11 @@ internal class CourierEntityTypeConfiguration : IEntityTypeConfiguration<Courier
             .Property(entity => entity.Name)
             .HasColumnName("name")
             .IsRequired();
+
+        // Assignments
+        entityTypeBuilder
+            .Navigation(entity => entity.Assignments)
+            .HasField("_assignments")
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }
