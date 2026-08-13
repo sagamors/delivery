@@ -4,6 +4,7 @@ using Clients.Geo;
 using Ddd;
 using DeliveryApp.Api;
 using DeliveryApp.Api.Adapters.BackgroundJobs;
+using DeliveryApp.Api.Adapters.Kafka.BasketEvents;
 using DeliveryApp.Core;
 using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
 using DeliveryApp.Core.Domain.Services;
@@ -86,6 +87,15 @@ builder.Services.AddSingleton(sp =>
 });
 builder.Services.AddScoped<IGeoService, GeoService>();
 
+// 10 модуль
+builder.Services.Configure<HostOptions>(options =>
+{
+    options.BackgroundServiceExceptionBehavior =
+        BackgroundServiceExceptionBehavior.StopHost;
+    options.ShutdownTimeout = TimeSpan.FromSeconds(30);
+});
+builder.Services.AddHostedService<ConsumerService>();
+
 // CRON Jobs
 builder.Services.AddQuartz(configure =>
 {
@@ -145,6 +155,7 @@ else
 
 app.UseHealthChecks("/health");
 app.UseRouting();
+app.UseCors();
 
 // 8 модуль
 app.UseSwagger(c => { c.RouteTemplate = "openapi/{documentName}/openapi.json"; });

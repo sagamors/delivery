@@ -3,7 +3,6 @@ using DeliveryApp.Core.Domain.Model.OrderAggregate;
 using DeliveryApp.Infrastructure.Adapters.Postgres.EntityConfigurations.CourierAggregate;
 using DeliveryApp.Infrastructure.Adapters.Postgres.EntityConfigurations.OrderAggregate;
 using Microsoft.EntityFrameworkCore;
-using Queues.Basket.Events;
 
 namespace DeliveryApp.Infrastructure.Adapters.Postgres;
 
