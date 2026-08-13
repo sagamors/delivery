@@ -91,7 +91,7 @@ builder.Services.AddScoped<IGeoService, GeoService>();
 builder.Services.Configure<HostOptions>(options =>
 {
     options.BackgroundServiceExceptionBehavior =
-        BackgroundServiceExceptionBehavior.Ignore;
+        BackgroundServiceExceptionBehavior.StopHost;
     options.ShutdownTimeout = TimeSpan.FromSeconds(30);
 });
 builder.Services.AddHostedService<ConsumerService>();

@@ -16,8 +16,8 @@ public class ConsumerService : BackgroundService
 
     public ConsumerService(IServiceScopeFactory scopeFactory, IOptions<Settings> settings, ILogger<ConsumerService> logger)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(nameof(settings.Value.MessageBrokerHost), settings.Value.MessageBrokerHost);
-        ArgumentNullException.ThrowIfNullOrEmpty(nameof(settings.Value.BasketEventsTopic), settings.Value.BasketEventsTopic);
+        ArgumentException.ThrowIfNullOrEmpty(settings.Value.MessageBrokerHost);
+        ArgumentException.ThrowIfNullOrEmpty(settings.Value.BasketEventsTopic);
         
         var consumerConfig = new ConsumerConfig
         {
@@ -96,13 +96,17 @@ public class ConsumerService : BackgroundService
             }
         }
         catch (OperationCanceledException)
-        { 
+        {
             _logger.LogInformation("Processing cancelled");
         }
         catch (Exception ex)
         {
+            _logger.LogCritical(ex, "Unhandled exception in Kafka consumer loop, stopping host");
+            throw;
+        }
+        finally
+        {
             _consumer.Close();
-            _logger.LogError(ex, "An exception occurred while processing the message");
         }
     }
 }
