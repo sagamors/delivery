@@ -67,7 +67,7 @@ public class Order : Aggregate<Guid>
         Status = OrderStatus.Assigned;
         CourierId = courierId;
 
-        RaiseDomainEvent(new OrderAssignedDomainEvent(this));
+        RaiseDomainEvent(new OrderAssignedDomainEvent(Id));
 
         return UnitResult.Success<Error>();
     }
@@ -81,7 +81,7 @@ public class Order : Aggregate<Guid>
             return Errors.NotAssigned();
         
         Status = OrderStatus.Completed;
-        RaiseDomainEvent(new OrderCompletedDomainEvent(this));
+        RaiseDomainEvent(new OrderCompletedDomainEvent(Id));
         return UnitResult.Success<Error>();
     }
     

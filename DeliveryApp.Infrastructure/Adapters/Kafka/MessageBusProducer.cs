@@ -29,7 +29,7 @@ public sealed class OrderEventsProducer : IOrderEventsProducer
     {
         var orderAssignedIntegrationEvent = new OrderAssignedIntegrationEvent()
         {
-            OrderId = notification.Order.Id.ToString(),
+            OrderId = notification.OrderId.ToString(),
         };
 
         await Produce(key: notification.EventId.ToString(), orderAssignedIntegrationEvent, notification, cancellationToken);
@@ -40,7 +40,7 @@ public sealed class OrderEventsProducer : IOrderEventsProducer
     {
         var orderCompletedIntegrationEvent = new OrderCompletedIntegrationEvent()
         {
-            OrderId = notification.Order.Id.ToString()
+            OrderId = notification.OrderId.ToString()
         };
 
         await Produce(key: notification.EventId.ToString(), orderCompletedIntegrationEvent, notification, cancellationToken);
@@ -60,7 +60,7 @@ public sealed class OrderEventsProducer : IOrderEventsProducer
             Headers = new Headers
         {
             { "event-id", Encoding.UTF8.GetBytes(key) },
-            { "event-type", Encoding.UTF8.GetBytes(domainEvent!.GetType().Name) },
+            { "event-type", Encoding.UTF8.GetBytes(integrationEvent.GetType().Name) },
             { "occurred-at", Encoding.UTF8.GetBytes(DateTime.UtcNow.ToString("O")) },
             { "content-type", "application/x-protobuf"u8.ToArray() },
             { "debug-json", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(domainEvent)) }
