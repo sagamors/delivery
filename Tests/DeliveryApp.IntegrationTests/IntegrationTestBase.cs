@@ -1,6 +1,8 @@
 ﻿using CntFixtures;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NSubstitute;
 using Xunit;
 
 namespace DeliveryApp.IntegrationTests;
@@ -12,6 +14,8 @@ public abstract class IntegrationTestBase : IAsyncLifetime
     private ApplicationDbContext? _dbContext;
 
     protected string ConnectionString => _postgres.ConnectionString;
+
+    protected IMediator Mediator { get; } = Substitute.For<IMediator>();
 
     protected ApplicationDbContext DbContext =>
         _dbContext ?? throw new InvalidOperationException(

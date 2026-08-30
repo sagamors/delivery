@@ -1,21 +1,25 @@
 using System.Reflection;
 using AutoMapper;
 using Clients.Geo;
+using Confluent.Kafka;
 using Ddd;
 using DeliveryApp.Api;
 using DeliveryApp.Api.Adapters.BackgroundJobs;
 using DeliveryApp.Api.Adapters.Kafka.BasketEvents;
 using DeliveryApp.Core;
+using DeliveryApp.Core.Application.EventHandlers;
 using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Core.Ports;
 using DeliveryApp.Infrastructure.Adapters.Grpc.GeoService;
+using DeliveryApp.Infrastructure.Adapters.Kafka;
+using DeliveryApp.Core.Domain.Model.OrderAggregate.DomainEvents;
+using MediatR;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using Grpc.Net.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -55,7 +59,9 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
         policy =>
         {
-            policy.AllowAnyOrigin(); // Не делайте так в проде!
+            policy.AllowAnyOrigin() // Не делайте так в проде!
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
 });
 
@@ -95,6 +101,13 @@ builder.Services.Configure<HostOptions>(options =>
     options.ShutdownTimeout = TimeSpan.FromSeconds(30);
 });
 builder.Services.AddHostedService<ConsumerService>();
+
+builder.Services.AddSingleton(di=> new ProducerBuilder<string, byte[]>(new ProducerConfig
+        {
+            BootstrapServers = di.GetRequiredService<IOptions<Settings>>().Value.MessageBrokerHost
+        }).Build());
+
+builder.Services.AddScoped<IOrderEventsProducer, OrderEventsProducer>();
 
 // CRON Jobs
 builder.Services.AddQuartz(configure =>

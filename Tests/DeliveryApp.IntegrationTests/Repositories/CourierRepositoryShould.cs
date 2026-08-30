@@ -18,7 +18,7 @@ public class CourierRepositoryShould : IntegrationTestBase
 
         // Act
         var courierRepository = new CourierRepository(DbContext);
-        var unitOfWork = new UnitOfWork(DbContext);
+        var unitOfWork = new UnitOfWork(DbContext, Mediator);
         await courierRepository.AddAsync(courier);
         await unitOfWork.SaveChangesAsync();
 
@@ -36,7 +36,7 @@ public class CourierRepositoryShould : IntegrationTestBase
         var courier = Courier.MustCreate("Pedestrian", Location.Min);
 
         var courierRepository = new CourierRepository(DbContext);
-        var unitOfWork = new UnitOfWork(DbContext);
+        var unitOfWork = new UnitOfWork(DbContext, Mediator);
         await courierRepository.AddAsync(courier);
         await unitOfWork.SaveChangesAsync();
 
@@ -59,7 +59,7 @@ public class CourierRepositoryShould : IntegrationTestBase
 
         // Act
         var courierRepository = new CourierRepository(DbContext);
-        var unitOfWork = new UnitOfWork(DbContext);
+        var unitOfWork = new UnitOfWork(DbContext, Mediator);
         await courierRepository.AddAsync(courier);
         await unitOfWork.SaveChangesAsync();
 
@@ -77,7 +77,7 @@ public class CourierRepositoryShould : IntegrationTestBase
 
         // Act
         var courierRepository = new CourierRepository(DbContext);
-        var unitOfWork = new UnitOfWork(DbContext);
+        var unitOfWork = new UnitOfWork(DbContext, Mediator);
         await courierRepository.AddAsync(courier1);
         await courierRepository.AddAsync(courier2);
         await unitOfWork.SaveChangesAsync();

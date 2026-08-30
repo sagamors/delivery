@@ -19,12 +19,12 @@ public class CourierRepository(ApplicationDbContext dbContext) : ICourierReposit
         _dbContext.Couriers.Update(courier);
     }
 
-    public async Task<Maybe<Courier>> GetAsync(Guid сourierId, CancellationToken cancellationToken)
+    public async Task<Maybe<Courier>> GetAsync(Guid courierId, CancellationToken cancellationToken)
     {
         var order = await _dbContext
             .Couriers
             .Include(c => c.Assignments)
-            .SingleOrDefaultAsync(o => o.Id == сourierId, cancellationToken);
+            .SingleOrDefaultAsync(o => o.Id == courierId, cancellationToken);
 
         return order;
     }

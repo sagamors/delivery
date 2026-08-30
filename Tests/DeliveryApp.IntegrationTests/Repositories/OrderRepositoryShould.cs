@@ -19,7 +19,7 @@ public class OrderRepositoryShould : IntegrationTestBase
 
         // Act
         var orderRepository = new OrderRepository(DbContext);
-        var unitOfWork = new UnitOfWork(DbContext);
+        var unitOfWork = new UnitOfWork(DbContext, Mediator);
 
         await orderRepository.AddAsync(order);
         await unitOfWork.SaveChangesAsync();
@@ -41,7 +41,7 @@ public class OrderRepositoryShould : IntegrationTestBase
         var orderRepository = new OrderRepository(DbContext);
         await orderRepository.AddAsync(order);
 
-        var unitOfWork = new UnitOfWork(DbContext);
+        var unitOfWork = new UnitOfWork(DbContext, Mediator);
         await unitOfWork.SaveChangesAsync();
 
         // Act
@@ -67,7 +67,7 @@ public class OrderRepositoryShould : IntegrationTestBase
         var orderRepository = new OrderRepository(DbContext);
         await orderRepository.AddAsync(order);
 
-        var unitOfWork = new UnitOfWork(DbContext);
+        var unitOfWork = new UnitOfWork(DbContext, Mediator);
         await unitOfWork.SaveChangesAsync();
 
         // Assert
@@ -94,7 +94,7 @@ public class OrderRepositoryShould : IntegrationTestBase
         await orderRepository.AddAsync(order1);
         await orderRepository.AddAsync(order2);
 
-        var unitOfWork = new UnitOfWork(DbContext);
+        var unitOfWork = new UnitOfWork(DbContext, Mediator);
         await unitOfWork.SaveChangesAsync();
 
         // Act
@@ -125,7 +125,7 @@ public class OrderRepositoryShould : IntegrationTestBase
         await orderRepository.AddAsync(order1);
         await orderRepository.AddAsync(order2);
 
-        var unitOfWork = new UnitOfWork(DbContext);
+        var unitOfWork = new UnitOfWork(DbContext, Mediator);
         await unitOfWork.SaveChangesAsync();
 
         //Act

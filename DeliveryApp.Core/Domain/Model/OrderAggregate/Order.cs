@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using CSharpFunctionalExtensions;
 using Ddd;
+using DeliveryApp.Core.Domain.Model.OrderAggregate.DomainEvents;
 using DeliveryApp.Core.Domain.Model.SharedKernel;
 using Errs;
 using Errs.Extensions;
@@ -43,7 +44,7 @@ public class Order : Aggregate<Guid>
         
         if (location is null)
             return GeneralErrors.ValueIsRequired(nameof(location));
-        
+
         return new Order(orderId, volume, location);
     }
     
@@ -65,6 +66,9 @@ public class Order : Aggregate<Guid>
         
         Status = OrderStatus.Assigned;
         CourierId = courierId;
+
+        RaiseDomainEvent(new OrderAssignedDomainEvent(Id));
+
         return UnitResult.Success<Error>();
     }
     
@@ -77,7 +81,7 @@ public class Order : Aggregate<Guid>
             return Errors.NotAssigned();
         
         Status = OrderStatus.Completed;
-
+        RaiseDomainEvent(new OrderCompletedDomainEvent(Id));
         return UnitResult.Success<Error>();
     }
     
