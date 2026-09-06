@@ -7,14 +7,11 @@ using DeliveryApp.Api;
 using DeliveryApp.Api.Adapters.BackgroundJobs;
 using DeliveryApp.Api.Adapters.Kafka.BasketEvents;
 using DeliveryApp.Core;
-using DeliveryApp.Core.Application.EventHandlers;
 using DeliveryApp.Core.Application.UseCases.Queries.GetAllCouriers;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Core.Ports;
 using DeliveryApp.Infrastructure.Adapters.Grpc.GeoService;
 using DeliveryApp.Infrastructure.Adapters.Kafka;
-using DeliveryApp.Core.Domain.Model.OrderAggregate.DomainEvents;
-using MediatR;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using Grpc.Net.Client;
@@ -116,8 +113,20 @@ builder.Services.AddQuartz(configure =>
     configure
         .AddJob<AssignOrderJob>(assignOrdersJobKey, configurator => { })
         .AddTrigger(trigger => trigger.ForJob(assignOrdersJobKey)
-            .WithSimpleSchedule(schedule => schedule.WithIntervalInSeconds(1)
+            .WithSimpleSchedule(schedule => schedule
+                .WithIntervalInSeconds(1)
                 .RepeatForever()));
+    
+        var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+
+        configure.AddJob<ProcessOutboxMessagesJob>(jobKey, configure => { })
+        .AddTrigger(trigger => trigger
+            .ForJob(jobKey)
+            .WithSimpleSchedule(schedule => schedule
+                    .WithIntervalInSeconds(3)
+                    .RepeatForever()
+            ));
+
 });
 builder.Services.AddQuartzHostedService();
 
