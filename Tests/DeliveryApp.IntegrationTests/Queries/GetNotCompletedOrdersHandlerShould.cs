@@ -28,7 +28,7 @@ public class GetNotCompletedOrdersHandlerShould : IntegrationTestBase
         await orderRepository.AddAsync(notCompletedOrder);
         await orderRepository.AddAsync(completedOrder);
 
-        var unitOfWork = new UnitOfWork(DbContext, Mediator);
+        var unitOfWork = new UnitOfWork(DbContext);
         await unitOfWork.SaveChangesAsync();
 
         var handler = new GetNotCompletedOrdersHandler(Options.Create(new Settings { ConnectionString = ConnectionString }));
@@ -57,7 +57,7 @@ public class GetNotCompletedOrdersHandlerShould : IntegrationTestBase
         var orderRepository = new OrderRepository(DbContext);
         await orderRepository.AddAsync(completedOrder);
 
-        var unitOfWork = new UnitOfWork(DbContext, Mediator);
+        var unitOfWork = new UnitOfWork(DbContext);
         await unitOfWork.SaveChangesAsync();
 
         var handler = new GetNotCompletedOrdersHandler(Options.Create(new Settings { ConnectionString = ConnectionString }));
